@@ -1,0 +1,122 @@
+:root {
+  --bg: #f8f6f2;
+  --blue: #2f5fa7;
+}
+
+/* ---------- Reset / Base ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--blue);
+  font-family: -apple-system, BlinkMacSystemFont,
+               "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* ---------- Layout ---------- */
+
+.invite {
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+/* ---------- Icon ---------- */
+
+.icon {
+  margin-bottom: 2rem;
+}
+
+.icon svg {
+  width: 80px;
+  height: 80px;
+  color: var(--blue);
+}
+
+/* ---------- Typography ---------- */
+
+.hosts {
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.details {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+/* ---------- CTA ---------- */
+
+.cta {
+  margin-top: 2rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--blue);
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.cta:hover {
+  background: var(--blue);
+  color: var(--bg);
+}
+
+/* ---------- CHAOS (subtle, escalating) ---------- */
+
+@keyframes subtleShake {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(0.5px, -0.5px); }
+  50%  { transform: translate(-0.5px, 0.5px); }
+  75%  { transform: translate(0.5px, 0.5px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes slowDrift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-4px); }
+}
+
+@keyframes microPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+/* Applied via JS, not visible at load */
+
+.chaos-1 {
+  animation: subtleShake 0.18s infinite;
+}
+
+.chaos-2 {
+  animation: slowDrift 2.5s ease-in-out infinite alternate;
+}
+
+.chaos-3 {
+  animation: microPulse 1.2s ease-in-out infinite;
+}
