@@ -1,95 +1,51 @@
-let stage = 0;
-const invite = document.querySelector(".invite");
-const title = document.querySelector(".title");
-const icon = document.querySelector(".icon");
+// Bouncing RSVP buttons
+const createBouncingButton = (text, href, size = 'normal') => {
+  const button = document.createElement('a');
+  button.href = href;
+  button.textContent = text;
+  button.className = `bouncing-btn ${size}`;
+  button.style.position = 'fixed';
+  button.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+  button.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+  document.body.appendChild(button);
 
-// Coffee shop ambience on load
-window.addEventListener("load", () => {
-  // Using Web Audio API to generate a subtle coffee pouring sound
-  // Alternative: you can host an actual coffee sound file
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  
-  // Create a simple coffee pour sound using filtered noise
-  const playPourSound = () => {
-    const duration = 2.5;
-    const now = audioContext.currentTime;
-    
-    // Create buffer with noise
-    const bufferSize = audioContext.sampleRate * duration;
-    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
-    
-    // Generate brown noise (softer than white noise)
-    let lastOut = 0;
-    for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      data[i] = (lastOut + (0.02 * white)) / 1.02;
-      lastOut = data[i];
-      data[i] *= 3.5;
+  // Random velocity
+  let vx = (Math.random() - 0.5) * 4;
+  let vy = (Math.random() - 0.5) * 4;
+
+  const bounce = () => {
+    const rect = button.getBoundingClientRect();
+    let x = parseFloat(button.style.left);
+    let y = parseFloat(button.style.top);
+
+    // Move
+    x += vx;
+    y += vy;
+
+    // Bounce off edges
+    if (x <= 0 || x + rect.width >= window.innerWidth) {
+      vx = -vx;
+      x = Math.max(0, Math.min(x, window.innerWidth - rect.width));
     }
-    
-    const noise = audioContext.createBufferSource();
-    noise.buffer = buffer;
-    
-    // Filter to make it sound more like pouring liquid
-    const filter = audioContext.createBiquadFilter();
-    filter.type = "bandpass";
-    filter.frequency.setValueAtTime(800, now);
-    filter.frequency.exponentialRampToValueAtTime(400, now + duration);
-    filter.Q.value = 1;
-    
-    // Volume envelope
-    const gainNode = audioContext.createGain();
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.15, now + 0.3);
-    gainNode.gain.setValueAtTime(0.15, now + 1.8);
-    gainNode.gain.linearRampToValueAtTime(0, now + duration);
-    
-    // Connect the chain
-    noise.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    noise.start(now);
-    noise.stop(now + duration);
+    if (y <= 0 || y + rect.height >= window.innerHeight) {
+      vy = -vy;
+      y = Math.max(0, Math.min(y, window.innerHeight - rect.height));
+    }
+
+    button.style.left = x + 'px';
+    button.style.top = y + 'px';
+
+    requestAnimationFrame(bounce);
   };
+
+  bounce();
+};
+
+// Create buttons when page loads
+window.addEventListener('load', () => {
+  // Yes button - opens SMS
+  createBouncingButton('RSVP Yes ☕', 'sms:');
   
-  // Try to play (some browsers block autoplay)
-  playPourSound();
-  
-  // If you prefer using an actual audio file instead, use this:
-  // const audio = new Audio('coffee-pour.mp3');
-  // audio.volume = 0.3;
-  // audio.play().catch(e => console.log('Autoplay blocked:', e));
-});
-
-document.body.addEventListener("click", () => {
-  stage++;
-
-  // Stage 1: something is off
-  if (stage === 1) {
-    navigator.vibrate?.(50);
-    title.classList.add("chaos-2");
-  }
-
-  // Stage 2: why is it moving
-  if (stage === 2) {
-    navigator.vibrate?.([30, 30, 30]);
-    icon.classList.add("chaos-1");
-  }
-
-  // Stage 3: okay stop
-  if (stage === 3) {
-    navigator.vibrate?.([100, 50, 100]);
-    invite.classList.add("chaos-1");
-  }
-
-  // Stage 4: reveal CTA
-  if (stage === 4) {
-    const cta = document.createElement("a");
-    cta.href = "party.ics";
-    cta.textContent = "Add to Calendar";
-    cta.className = "cta";
-    invite.appendChild(cta);
-  }
+  // No button - small and goes to sad page
+  createBouncingButton('no', 'no.html', 'small');
 });
