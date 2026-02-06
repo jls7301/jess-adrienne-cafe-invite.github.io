@@ -44,7 +44,7 @@ const createBouncingButton = (text, href, size = 'normal') => {
 // Create buttons when page loads
 window.addEventListener('load', () => {
   // Yes button - opens SMS
-  createBouncingButton('RSVP Yes ☕', 'sms:');
+  createBouncingButton('RSVP Yes', 'sms:');
   
   // No button - small and goes to sad page
   createBouncingButton('no', 'no.html', 'small');
